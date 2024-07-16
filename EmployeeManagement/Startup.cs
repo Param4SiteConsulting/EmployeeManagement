@@ -1,3 +1,4 @@
+using EmployeeManagement.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,11 @@ namespace EmployeeManagement
                 
         public void ConfigureServices(IServiceCollection services)
         {                  
-            services.AddMvc().AddXmlDataContractSerializerFormatters();                     
+            services.AddMvc().AddXmlDataContractSerializerFormatters();
+
+            // Register services for dependency injection
+            services.AddTransient<ISoapResponseService, SoapResponseService>();
+            services.AddTransient<IJsonResponseService, JsonResponseService>();
 
         }
 

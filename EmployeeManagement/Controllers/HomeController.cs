@@ -1,6 +1,8 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Services;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace EmployeeManagement.Controllers
 {
@@ -8,9 +10,30 @@ namespace EmployeeManagement.Controllers
     {
         private readonly MockEmployeeRepository _empRepo;
 
-        public HomeController()
+        private readonly ISoapResponseService _soapResponseService;
+        private readonly IJsonResponseService _jsonResponseService;
+
+        public HomeController(ISoapResponseService soapResponseService, IJsonResponseService jsonResponseService)
         {
+            _soapResponseService = soapResponseService;
+            _jsonResponseService = jsonResponseService;
             _empRepo = new MockEmployeeRepository();
+        }
+
+        [HttpGet]
+        [Route("soap-response")]
+        public IActionResult SoapResponse()
+        {
+            var xmlString = _soapResponseService.GenerateSoapResponse();
+            return Content(xmlString, "text/xml", Encoding.UTF8);
+        }
+
+        [HttpGet]
+        [Route("json-response")]
+        public IActionResult JsonResponse()
+        {
+            var jsonResponse = _jsonResponseService.GenerateJsonResponse();
+            return Json(jsonResponse);
         }
 
         public ViewResult Index()
